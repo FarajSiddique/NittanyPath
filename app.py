@@ -25,6 +25,7 @@ def name():
 
 
 def valid_name(username, password):
+    ## Check validity of plain text password and stored hashed password
     connection = sql.connect('database.db')
     cursor = connection.execute('SELECT * FROM users WHERE username = ?;', (username,))
     connection.commit()
@@ -36,6 +37,7 @@ def valid_name(username, password):
     return matchedPassword
 
 def hash_passwords():
+    ## Script that was ran to convert all plain text passwords given in CSV to hashed form
     connection = sql.connect("database.db")
     cursor = connection.cursor()
     cursor2 = connection.cursor()
