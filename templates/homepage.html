@@ -2,9 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static',filename='homepage.css') }}">
     <title>Title</title>
 </head>
 <body>
-    <h1>Homepage!</h1>
+<div class="navbar">
+    <nav>
+        <ul>
+            <li><a href="/bidding" method="POST">Buy an Item</a></li>
+            <li><a href="#">Sell an Item</a></li>
+            <li><a href="#">Contact HelpDeskIT</a></li>
+        </ul>
+    </nav>
+</div>
+ <h1 class="heading-text">Homepage!</h1>
 </body>
 </html>

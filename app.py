@@ -23,7 +23,6 @@ def name():
             error = 'invalid input name'
     return render_template('input.html', error=error)
 
-
 def valid_name(username, password):
     ## Check validity of plain text password and stored hashed password
     connection = sql.connect('database.db')
@@ -48,6 +47,10 @@ def hash_passwords():
         cursor2.execute('UPDATE users SET hashedPass=? WHERE password=?;', (hashedPassword, rowPassword))
         connection.commit()
     connection.close()
+
+@app.route('/bidding')
+def bidding():
+    return render_template('bidding.html')
 
 if __name__ == "__main__":
     app.run()
