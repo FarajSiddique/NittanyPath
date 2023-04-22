@@ -17,8 +17,16 @@ def name():
     error = None
     if request.method == 'POST':
         result = valid_name(request.form['username'], request.form['password'])
+        email = request.form['username']
         if result:
-            return render_template('homepage.html', error=error, result=result)
+            connection = sql.connect('database.db')
+            cursor = connection.execute('SELECT * from bidders WHERE email=?;', (email, ))
+            data = cursor.fetchone()
+            print(data)
+            cursor2 = connection.execute('SELECT * from address WHERE address_id=?;', (data[5], ))
+            address_data = cursor2.fetchone()
+            print(address_data)
+            return render_template('homepage.html', error=error, result=result, data=data, addressData=address_data)
         else:
             error = 'invalid input name'
     return render_template('input.html', error=error)
@@ -51,6 +59,14 @@ def hash_passwords():
 @app.route('/bidding')
 def bidding():
     return render_template('bidding.html')
+
+@app.route('/selling')
+def selling():
+    return render_template('selling.html')
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
 
 if __name__ == "__main__":
     app.run()

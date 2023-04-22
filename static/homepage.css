@@ -1,10 +1,11 @@
 .heading-text {
     font-size: 3rem;
     color: blue;
+    text-align: center;
 }
 
 nav {
-  background-color: #333; /* change to your preferred background color */
+  background-color: #333;
 }
 
 nav ul {
@@ -27,5 +28,5 @@ nav li a {
 }
 
 nav li a:hover {
-  background-color: #111; /* change to your preferred hover color */
+  background-color: #111;
 }

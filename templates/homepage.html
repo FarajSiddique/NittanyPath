@@ -10,11 +10,39 @@
     <nav>
         <ul>
             <li><a href="/bidding" method="POST">Buy an Item</a></li>
-            <li><a href="#">Sell an Item</a></li>
-            <li><a href="#">Contact HelpDeskIT</a></li>
+            <li><a href="/selling">Sell an Item</a></li>
+            <li><a href="/contact">Contact HelpDeskIT</a></li>
         </ul>
     </nav>
 </div>
  <h1 class="heading-text">Homepage!</h1>
+<table>
+        <tr>
+            <th>Email</th>
+            <th>First name</th>
+            <th>Last Name</th>
+            <th>Gender</th>
+            <th>Age</th>
+            <th>Major</th>
+        </tr>
+        <tr>
+            <td>{{ data[0] }}</td>
+            <td>{{ data[1] }}</td>
+            <td>{{ data[2] }}</td>
+            <td>{{ data[3] }}</td>
+            <td>{{ data[4] }}</td>
+            <td>{{ data[6] }}</td>
+        </tr>
+        <tr>
+            <th>Zipcode</th>
+            <th>Street Number</th>
+            <th>Street Name</th>
+        </tr>
+            <tr>
+                <td>{{ addressData[1] }}</td>
+                <td>{{ addressData[2] }}</td>
+                <td>{{ addressData[3] }}</td>
+            </tr>
+    </table>
 </body>
 </html>
