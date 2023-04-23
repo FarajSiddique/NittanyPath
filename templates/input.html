@@ -14,10 +14,7 @@
 <div class="container-sm">
     <div class="card-body">
         <h2 class="card-title">Enter Your Username and Password</h2>
-
-
         <form action="/name" method="POST">
-
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" name="username" required class="form-control">
@@ -25,6 +22,14 @@
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" name="password" required class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="user-type">I am a:</label>
+                <select id="user-type" name="user-type">
+                    <option value="bidder">Bidder</option>
+                    <option value="seller">Seller</option>
+                    <option value="helpdesk">HelpDeskIT</option>
+                </select>
             </div>
             <button type="submit" class="btn btn-primary">Insert</button>
             <a class="btn btn-success" href="/" role="button">Go Back</a>

@@ -5,9 +5,57 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ url_for('static',filename='homepage.css') }}">
     <title>Document</title>
 </head>
 <body>
-    <h1>Sell Here!</h1>
+<div class="navbar">
+    <nav>
+        <ul>
+            <li><a href="/bidding" method="POST">Buy an Item</a></li>
+            <li><a href="/selling">Sell an Item</a></li>
+            <li><a href="/contact">Contact HelpDeskIT</a></li>
+        </ul>
+    </nav>
+</div>
+ <h1 class="heading-text">Seller Homepage!</h1>
+<table>
+        <tr>
+            <th>Email</th>
+            <th>First name</th>
+            <th>Last Name</th>
+            <th>Gender</th>
+            <th>Age</th>
+            <th>Major</th>
+        </tr>
+        <tr>
+            <td>{{ bidder_data[0] }}</td>
+            <td>{{ bidder_data[1] }}</td>
+            <td>{{ bidder_data[2] }}</td>
+            <td>{{ bidder_data[3] }}</td>
+            <td>{{ bidder_data[4] }}</td>
+            <td>{{ bidder_data[6] }}</td>
+        </tr>
+        <tr>
+            <th>Zipcode</th>
+            <th>Street Number</th>
+            <th>Street Name</th>
+        </tr>
+            <tr>
+                <td>{{ address_data[1] }}</td>
+                <td>{{ address_data[2] }}</td>
+                <td>{{ address_data[3] }}</td>
+            </tr>
+        <tr>
+            <th>bank routing number</th>
+            <th>bank account number</th>
+            <th>balance</th>
+        </tr>
+        <tr>
+            <td>{{  seller_data[1] }}</td>
+            <td>{{  seller_data[2] }}</td>
+            <td>{{  seller_data[3] }}</td>
+        </tr>
+    </table>
 </body>
 </html>

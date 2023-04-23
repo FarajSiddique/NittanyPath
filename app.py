@@ -19,17 +19,40 @@ def name():
         result = valid_name(request.form['username'], request.form['password'])
         email = request.form['username']
         if result:
-            connection = sql.connect('database.db')
-            cursor = connection.execute('SELECT * from bidders WHERE email=?;', (email, ))
-            data = cursor.fetchone()
-            print(data)
-            cursor2 = connection.execute('SELECT * from address WHERE address_id=?;', (data[5], ))
-            address_data = cursor2.fetchone()
-            print(address_data)
-            return render_template('homepage.html', error=error, result=result, data=data, addressData=address_data)
+            role = request.form['user-type']
+            if role == 'bidder':
+                connection = sql.connect('database.db')
+                cursor = connection.execute('SELECT * from bidders WHERE email=?;', (email, ))
+                data = cursor.fetchone()
+                if data is not None:
+                    cursor2 = connection.execute('SELECT * from address WHERE address_id=?;', (data[5], ))
+                    address_data = cursor2.fetchone()
+                    cursor.close()
+                    cursor2.close()
+                    connection.close()
+                    return render_template('homepage.html', error=error, result=result, data=data, addressData=address_data)
+                else:
+                    error = 'invalid role selected'
+            elif role == 'seller':
+                connection = sql.connect('database.db')
+                cursor = connection.execute('SELECT * from sellers WHERE email=?', (email, ))
+                seller_data = cursor.fetchone()
+                if seller_data is not None:
+                    cursor2 = connection.execute('SELECT * from bidders WHERE email=?;', (email,))
+                    bidder_data = cursor2.fetchone()
+                    cursor3 = connection.execute('SELECT * from address WHERE address_id=?;', (bidder_data[5],))
+                    address_data = cursor3.fetchone()
+                    cursor.close()
+                    cursor2.close()
+                    cursor3.close()
+                    connection.close()
+                    return render_template('selling.html', error=error, result=result, seller_data=seller_data, bidder_data=bidder_data, address_data=address_data)
+                else:
+                    error = 'invalid role selected'
         else:
             error = 'invalid input name'
     return render_template('input.html', error=error)
+
 
 def valid_name(username, password):
     ## Check validity of plain text password and stored hashed password
@@ -58,6 +81,7 @@ def hash_passwords():
 
 @app.route('/bidding')
 def bidding():
+    print("testing")
     return render_template('bidding.html')
 
 @app.route('/selling')
