@@ -90,10 +90,14 @@ def hash_passwords():
         connection.commit()
     connection.close()
 
-@app.route('/bidding')
-def bidding():
-    print("testing")
-    return render_template('bidding.html')
+@app.route('/categories')
+def categories():
+    connection = sql.connect("database.db")
+    cursor = connection.cursor()
+    categories_list = cursor.execute('SELECT * FROM categories').fetchall()
+    cursor.close()
+    connection.close()
+    return render_template('categories.html', categories=categories_list)
 
 @app.route('/selling')
 def selling():
@@ -102,6 +106,13 @@ def selling():
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
+
+@app.route('/<item>')
+def item_page(item):
+    connection = sql.connect('database.db')
+    cursor = connection.execute('SELECT * from auction_listings WHERE category = ?', (item, ))
+    available_items_list = cursor.fetchall()
+    return render_template("item.html", item_list=available_items_list)
 
 if __name__ == "__main__":
     app.run()

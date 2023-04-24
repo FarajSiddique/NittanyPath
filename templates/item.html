@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Item Listing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+        h1 {
+            color: #0077cc;
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            margin-bottom: 10px;
+        }
+        li:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .active {
+            color: green;
+            font-weight: bold;
+        }
+        .sold {
+            color: red;
+            font-weight: bold;
+        }
+        .inactive {
+            color: gray;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    {% if item_list %}
+        <h1>Current Listings</h1>
+        <ul>
+            {% for item in item_list %}
+                <li>
+                    <h3>{{ item[2] }}</h3>
+                    <p>Category: {{ item[3] }}</p>
+                    <p>Parent Category: {{ item[4] }}</p>
+                    <p>Price: ${{ item[5] }}</p>
+                    <p>Description: {{ item[6] }}</p>
+                    {% if item[9] == 1 %}
+                        <p class="active">Status: Active</p>
+                    {% elif item[9] == 2 %}
+                        <p class="sold">Status: Sold</p>
+                    {% else %}
+                        <p class="inactive">Status: Inactive</p>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h1>No Current Listings</h1>
+    {% endif %}
+</body>
+</html>
