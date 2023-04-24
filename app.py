@@ -27,10 +27,13 @@ def name():
                 if data is not None:
                     cursor2 = connection.execute('SELECT * from address WHERE address_id=?;', (data[5], ))
                     address_data = cursor2.fetchone()
+                    cursor2 = connection.execute('SELECT * from zipcode_info WHERE zipcode=?;', (address_data[1], ))
+                    zipcode_data = cursor2.fetchone()
+                    street_address = f'{address_data[2]} {address_data[3]} {zipcode_data[1]}, {zipcode_data[2]} {zipcode_data[0]}'
                     cursor.close()
                     cursor2.close()
                     connection.close()
-                    return render_template('homepage.html', error=error, result=result, data=data, addressData=address_data)
+                    return render_template('homepage.html', error=error, result=result, data=data, street_address=street_address)
                 else:
                     error = 'invalid role selected'
             elif role == 'seller':
@@ -42,11 +45,19 @@ def name():
                     bidder_data = cursor2.fetchone()
                     cursor3 = connection.execute('SELECT * from address WHERE address_id=?;', (bidder_data[5],))
                     address_data = cursor3.fetchone()
+                    cursor2 = connection.execute('SELECT * from zipcode_info WHERE zipcode=?;', (address_data[1],))
+                    zipcode_data = cursor2.fetchone()
+                    street_address = f'{address_data[2]} {address_data[3]} {zipcode_data[1]}, {zipcode_data[2]} {zipcode_data[0]}'
+                    cursor2 = connection.execute('SELECT * FROM credit_cards WHERE owner_email=?;', (seller_data[0], ))
+                    credit_card_info = cursor2.fetchone()
+                    card_num = credit_card_info[0][-4:]  # last four digits of card number
                     cursor.close()
                     cursor2.close()
                     cursor3.close()
                     connection.close()
-                    return render_template('selling.html', error=error, result=result, seller_data=seller_data, bidder_data=bidder_data, address_data=address_data)
+                    return render_template('selling.html', error=error, result=result, seller_data=seller_data,
+                                           bidder_data=bidder_data, street_address=street_address,
+                                           card_num=card_num)
                 else:
                     error = 'invalid role selected'
         else:

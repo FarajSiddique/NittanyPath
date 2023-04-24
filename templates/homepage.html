@@ -3,46 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{{ url_for('static',filename='homepage.css') }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <title>Title</title>
 </head>
 <body>
 <div class="navbar">
     <nav>
         <ul>
-            <li><a href="/bidding" method="POST">Buy an Item</a></li>
-            <li><a href="/selling">Sell an Item</a></li>
+            <li><a href="/bidding" methods="POST">Buy an Item</a></li>
             <li><a href="/contact">Contact HelpDeskIT</a></li>
         </ul>
     </nav>
 </div>
- <h1 class="heading-text">Homepage!</h1>
-<table>
-        <tr>
-            <th>Email</th>
-            <th>First name</th>
-            <th>Last Name</th>
-            <th>Gender</th>
-            <th>Age</th>
-            <th>Major</th>
-        </tr>
-        <tr>
-            <td>{{ data[0] }}</td>
-            <td>{{ data[1] }}</td>
-            <td>{{ data[2] }}</td>
-            <td>{{ data[3] }}</td>
-            <td>{{ data[4] }}</td>
-            <td>{{ data[6] }}</td>
-        </tr>
-        <tr>
-            <th>Zipcode</th>
-            <th>Street Number</th>
-            <th>Street Name</th>
-        </tr>
+<div class="container-fluid text-center center">
+    <div class="row content">
+        <div class="col-sm-2 text-left">
+            <table class="info-table table">
             <tr>
-                <td>{{ addressData[1] }}</td>
-                <td>{{ addressData[2] }}</td>
-                <td>{{ addressData[3] }}</td>
+                <th scope="col">Email</th>
+                <th scope="col">First name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Gender</th>
+                <th scope="col">Age</th>
+                <th scope="col">Major</th>
+                <th scope="col">Street Address</th>
             </tr>
-    </table>
+            <tr>
+                <td>{{ data[0] }}</td>
+                <td>{{ data[1] }}</td>
+                <td>{{ data[2] }}</td>
+                <td>{{ data[3] }}</td>
+                <td>{{ data[4] }}</td>
+                <td>{{ data[6] }}</td>
+                <td>{{ street_address }}</td>
+            </tr>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="col-sm-8 text-left">
+        <h1>Welcome</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        <hr>
+        <h3>Test</h3>
+        <p>Lorem ipsum...</p>
+    </div>
+</div>
 </body>
 </html>

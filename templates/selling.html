@@ -12,9 +12,9 @@
 <div class="navbar">
     <nav>
         <ul>
-            <li><a href="/bidding" method="POST">Buy an Item</a></li>
             <li><a href="/selling">Sell an Item</a></li>
             <li><a href="/contact">Contact HelpDeskIT</a></li>
+            <li><a href="/view-listings">View Listings</a></li>
         </ul>
     </nav>
 </div>
@@ -37,24 +37,22 @@
             <td>{{ bidder_data[6] }}</td>
         </tr>
         <tr>
-            <th>Zipcode</th>
-            <th>Street Number</th>
-            <th>Street Name</th>
+            <th>Street Address</th>
         </tr>
             <tr>
-                <td>{{ address_data[1] }}</td>
-                <td>{{ address_data[2] }}</td>
-                <td>{{ address_data[3] }}</td>
+                <td>{{ street_address }}</td>
             </tr>
         <tr>
             <th>bank routing number</th>
             <th>bank account number</th>
             <th>balance</th>
+            <th>Credit Card Number (last four digits)</th>
         </tr>
         <tr>
             <td>{{  seller_data[1] }}</td>
             <td>{{  seller_data[2] }}</td>
             <td>{{  seller_data[3] }}</td>
+            <td>{{ card_num }}</td>
         </tr>
     </table>
 </body>
