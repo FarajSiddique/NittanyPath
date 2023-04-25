@@ -4,7 +4,7 @@ from passlib.hash import sha256_crypt
 import secrets
 
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(16)
+app.secret_key = secrets.token_hex(16) ## Authenticate session per user to ensure security
 host = 'http://127.0.0.1:5000/'
 
 @app.route('/')
@@ -15,13 +15,13 @@ def index():
 def name():
     error = None
     if request.method == 'POST':
-        result = valid_name(request.form['username'], request.form['password'])
+        result = valid_name(request.form['username'], request.form['password']) ##Fetch username and password and check if valid
         email = request.form['username']
-        session['username'] = email
+        session['username'] = email  ##  Store username for future reference when performing actions
         if result:
             role = request.form['user-type']
-            session['role'] = role
-            if role == 'bidder':
+            session['role'] = role  ##  store Role to check in future actions
+            if role == 'bidder': ## Check if role is bidder, if so fetch bidder data, address data and zipcode data
                 connection = sql.connect('database.db')
                 cursor = connection.execute('SELECT * from bidders WHERE email=?;', (email, ))
                 data = cursor.fetchone()
@@ -31,13 +31,15 @@ def name():
                     cursor2 = connection.execute('SELECT * from zipcode_info WHERE zipcode=?;', (address_data[1], ))
                     zipcode_data = cursor2.fetchone()
                     street_address = f'{address_data[2]} {address_data[3]} {zipcode_data[1]}, {zipcode_data[2]} {zipcode_data[0]}'
+                    ## Format string to show proper street address
                     cursor.close()
                     cursor2.close()
                     connection.close()
                     return render_template('homepage.html', error=error, result=result, data=data, street_address=street_address)
-                else:
+                else: ## If data is none, user is not a bidder
                     error = 'invalid role selected'
-            elif role == 'seller':
+            elif role == 'seller':  ## If role is seller, fetch seller data, bidder data, address data, zip code info and
+                                    ## payment info
                 connection = sql.connect('database.db')
                 cursor = connection.execute('SELECT * from sellers WHERE email=?', (email, ))
                 seller_data = cursor.fetchone()
@@ -59,8 +61,16 @@ def name():
                     return render_template('selling.html', error=error, result=result, seller_data=seller_data,
                                            bidder_data=bidder_data, street_address=street_address,
                                            card_num=card_num)
-                else:
+                else: ## If seller data is none, user is not a seller
                     error = 'invalid role selected'
+            else: ## Else, user is a helpdeskIT staff. Fetch request tickets if any and also position he/she serves
+                connection = sql.connect('database.db')
+                cursor = connection.execute('SELECT * from helpdesk WHERE email=?', (email,))
+                helpdesk_data = cursor.fetchone()
+                if helpdesk_data is not None:
+                    cursor = connection.execute('SELECT * from requests WHERE helpdesk_staff_email=?', (email,))
+                    request_tickets = cursor.fetchall()
+                    return render_template('helpdesk.html', helpdesk_data=helpdesk_data, request_tickets=request_tickets)
         else:
             error = 'invalid input name'
     return render_template('input.html', error=error)
@@ -91,7 +101,7 @@ def hash_passwords():
     connection.close()
 
 @app.route('/categories')
-def categories():
+def categories(): ## Grab all categories and order by parent category
     connection = sql.connect("database.db")
     cursor = connection.cursor()
     categories_list = cursor.execute('SELECT * FROM categories ORDER BY parent_category').fetchall()
@@ -99,16 +109,44 @@ def categories():
     connection.close()
     return render_template('categories.html', categories=categories_list)
 
-@app.route('/selling')
-def selling():
-    return render_template('selling.html')
+@app.route('/list-item-dashboard', methods=['POST', 'GET'])
+def list_item_page(): ## Logic for listing an item here. First grab category list.
+    connection = sql.connect('database.db')
+    cursor = connection.cursor()
+    categories_list = cursor.execute('SELECT * FROM categories ORDER BY parent_category').fetchall()
+    message = ""
+    if request.method == "POST":
+        username = session.get('username')
+        connection = sql.connect('database.db')
+        cursor = connection.cursor()
+        cursor.execute('SELECT MAX(listing_id) FROM auction_listings')
+        new_listing_id = cursor.fetchone()[0] + 1
+        category = request.form['category_name']
+        auction_title = request.form['auction_title']
+        product_name = request.form['product_name']
+        product_description = request.form['description']
+        quantity = request.form['quantity']
+        reserve_price = request.form['reserve_price']
+        max_bids = request.form['max_bids']
+        ## Fetch form info. Create new listing id that is one bigger than the max id in database
+        new_category = connection.execute(
+            'INSERT INTO auction_listings (seller_email, listing_id, category, auction_title,'
+            'product_name, product_description, quantity, reserve_price, max_bids, status) '
+            'VALUES (?,?,?,?,?,?,?,?,?,?)', (username, new_listing_id, category, auction_title,
+                                             product_name, product_description, quantity,
+                                             reserve_price, max_bids, 1))
+        message = "Thank you for posting an item!"
+        connection.commit()
+        cursor.close()
+        connection.close()
+    return render_template('list-item.html', categories_list=categories_list, message=message)
 
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
 
 @app.route('/<item>')
-def item_page(item):
+def item_page(item): ## Display all items for auction in a particular category
     connection = sql.connect('database.db')
     cursor = connection.execute('SELECT * from auction_listings WHERE category = ?', (item, ))
     available_items_list = cursor.fetchall()
@@ -116,41 +154,50 @@ def item_page(item):
 
 
 @app.route('/bid/int:<item_num>', methods=['POST', 'GET'])
-def bid(item_num):
+def bid(item_num): ## Bidding logic here. First grab all previous bids.
     connection = sql.connect('database.db')
     cursor = connection.execute('SELECT * from bids WHERE listing_id=? ORDER BY bid_price ASC', (item_num,))
     bid_list = cursor.fetchall()
+    ## Grab auction listing info for particular listing id
     cursor = connection.execute('SELECT * FROM auction_listings WHERE listing_id=?', (item_num,))
     item_info = cursor.fetchone()
     message = 'You have not placed a bid yet'
+    ## max bids is defaulted to max bids - the previous amount of bids placed on the item in case a user has already
+    ## bidded on it.
     max_bids = session.get('max_bids', item_info[8] - len(bid_list))
+    ## Keep track of previous bidder. Defaulted to None
     previous_bidder = session.get('bidder', None)
 
     if bid_list:
+        ## Grab last highest bid amount from bid list. Store it in 'previous_bid' to keep track of it
         last_price = max(bid_list, key=lambda x: x[4])[4]
         session['previous_bid'] = last_price
 
     if request.method == 'POST':
+        ## Grab previous bid. Defaulted to zero
         previous_bid = session.get('previous_bid', 0)
+        ## Grab current bid amount from form
         current_bid = int(request.form['current_bid'])
+        ## Grab current user
         current_bidder = session.get('username', None)
 
-        if current_bidder == previous_bidder:
+        if current_bidder == previous_bidder: ## Check if user placed a bid previously. Must wait for another user
+                                            # to bid first
             message = 'You have already placed a bid'
-        elif current_bid >= previous_bid + 1:
+        elif current_bid >= previous_bid + 1: ## Check if bid is one or more higher than previous
             session['previous_bid'] = current_bid
-            session['max_bids'] = max_bids - 1
+            session['max_bids'] = max_bids - 1 ## Update max bids
             session['bidder'] = current_bidder
-            if session['max_bids'] == 0:
-                print(item_info[7])
-                if int(item_info[7][1:]) <= current_bid:
+            if session['max_bids'] == 0: ## Check if any bids remaining
+                if int(item_info[7][1:]) <= current_bid: ## Check if higher than reserve price. If so, auction successful
                     message = 'Congratulations! You have won the auction!'  ##COMPARE WITH RESERVE PRICE
-                else:
+                else: ## Auction failed. Reserve price higher than winning bid.
                     message = 'Sorry! This auction was unsuccessful.'
+                ## Change status of item to sold
                 cursor = connection.execute(
                     'UPDATE auction_listings SET status = 2 WHERE listing_id=?', (item_num,))
                 connection.commit() ## Delist item
-            else:  ##Write into DB
+            else:  ##Write into DB the bid information
                 message = f'Your current bid of {current_bid} has been accepted.'
             connection = sql.connect('database.db')
             cursor = connection.cursor()
@@ -171,14 +218,14 @@ def bid(item_num):
     return render_template('bid.html', item_info=item_info, message=message, max_bids=max_bids, bid_list=bid_list)
 
 @app.route('/view-listings', methods=['POST', 'GET'])
-def view_listings():
+def view_listings(): ## View listings a seller currently has up
     connection = sql.connect('database.db')
     cursor = connection.execute('SELECT * FROM auction_listings WHERE seller_email = ?', (session.get('username'), ))
     listing_data = cursor.fetchall()
     return render_template('view-listings.html', listing_data=listing_data)
 
 @app.route('/update-status-inactive', methods=['POST','GET'])
-def update_status_inactive():
+def update_status_inactive(): ## Update listing status from active to inactive
     listing_id = request.form['listing-id']
     connection = sql.connect('database.db')
     cursor = connection.cursor()
@@ -188,7 +235,7 @@ def update_status_inactive():
     return redirect(request.referrer)
 
 @app.route('/update-status-active', methods=['POST'])
-def update_status_active():
+def update_status_active(): ## Update listing status from inactive to active
     listing_id = request.form['listing-id']
     connection = sql.connect('database.db')
     cursor = connection.cursor()
