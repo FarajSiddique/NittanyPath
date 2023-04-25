@@ -50,7 +50,15 @@
             <div class="col-md-4">
                 <div class="well">
                     <h3>Welcome to LionAuction!</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tristique erat sed dolor maximus, id aliquet neque volutpat. Nulla facilisi. Nam a diam nunc. Nam volutpat velit et ultricies elementum. Nullam euismod ante nec venenatis tincidunt.</p>
+                    <p>Current Bids:</p>
+                    <br>
+                    {% for bid in current_bids_list %}
+                        <p>Bid ID: {{ bid[0] }}</p>
+                        <p>Seller Email: {{ bid[1] }}</p>
+                        <p>Listing ID: {{ bid[2] }}</p>
+                        <p>Bid Price: {{ bid[4] }}</p>
+                        <br>
+                    {% endfor %}
                 </div>
             </div>
         </div>

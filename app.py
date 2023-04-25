@@ -32,10 +32,13 @@ def name():
                     zipcode_data = cursor2.fetchone()
                     street_address = f'{address_data[2]} {address_data[3]} {zipcode_data[1]}, {zipcode_data[2]} {zipcode_data[0]}'
                     ## Format string to show proper street address
+                    cursor = connection.execute('SELECT * from bids WHERE bidder_email = ?;', (email, ))
+                    current_bids_list = cursor.fetchall()
                     cursor.close()
                     cursor2.close()
                     connection.close()
-                    return render_template('homepage.html', error=error, result=result, data=data, street_address=street_address)
+                    return render_template('homepage.html', error=error, result=result, data=data, street_address=street_address
+                                           , current_bids_list=current_bids_list)
                 else: ## If data is none, user is not a bidder
                     error = 'invalid role selected'
             elif role == 'seller':  ## If role is seller, fetch seller data, bidder data, address data, zip code info and
