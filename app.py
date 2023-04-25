@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, redirect
 import sqlite3 as sql
 from passlib.hash import sha256_crypt
 import secrets
@@ -9,7 +9,7 @@ host = 'http://127.0.0.1:5000/'
 
 @app.route('/')
 def index():
-    return render_template('input.html')
+    return render_template('index.html')
 
 @app.route('/name', methods=['POST', 'GET'])
 def name():
@@ -142,10 +142,14 @@ def bid(item_num):
             session['max_bids'] = max_bids - 1
             session['bidder'] = current_bidder
             if session['max_bids'] == 0:
-                if item_info[7] <= current_bid:
+                print(item_info[7])
+                if int(item_info[7][1:]) <= current_bid:
                     message = 'Congratulations! You have won the auction!'  ##COMPARE WITH RESERVE PRICE
                 else:
                     message = 'Sorry! This auction was unsuccessful.'
+                cursor = connection.execute(
+                    'UPDATE auction_listings SET status = 2 WHERE listing_id=?', (item_num,))
+                connection.commit() ## Delist item
             else:  ##Write into DB
                 message = f'Your current bid of {current_bid} has been accepted.'
             connection = sql.connect('database.db')
@@ -166,6 +170,32 @@ def bid(item_num):
         connection.close()
     return render_template('bid.html', item_info=item_info, message=message, max_bids=max_bids, bid_list=bid_list)
 
+@app.route('/view-listings', methods=['POST', 'GET'])
+def view_listings():
+    connection = sql.connect('database.db')
+    cursor = connection.execute('SELECT * FROM auction_listings WHERE seller_email = ?', (session.get('username'), ))
+    listing_data = cursor.fetchall()
+    return render_template('view-listings.html', listing_data=listing_data)
+
+@app.route('/update-status-inactive', methods=['POST','GET'])
+def update_status_inactive():
+    listing_id = request.form['listing-id']
+    connection = sql.connect('database.db')
+    cursor = connection.cursor()
+    cursor.execute('UPDATE auction_listings SET status = 0 WHERE listing_id=?', (listing_id, ))
+    connection.commit()
+    connection.close()
+    return redirect(request.referrer)
+
+@app.route('/update-status-active', methods=['POST'])
+def update_status_active():
+    listing_id = request.form['listing-id']
+    connection = sql.connect('database.db')
+    cursor = connection.cursor()
+    cursor.execute('UPDATE auction_listings SET status = 1 WHERE listing_id=?', (listing_id, ))
+    connection.commit()
+    connection.close()
+    return redirect(request.referrer)
 
 if __name__ == "__main__":
     app.run(debug=True)

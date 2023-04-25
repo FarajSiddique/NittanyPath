@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Item Listing</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+        h1 {
+            color: #0077cc;
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            margin-bottom: 10px;
+        }
+        li:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .active {
+            color: green;
+            font-weight: bold;
+        }
+        .sold {
+            color: red;
+            font-weight: bold;
+        }
+        .inactive {
+            color: gray;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    {% if listing_data %}
+        <h1>Current Listings</h1>
+        <ul>
+            {% for listing in listing_data %}
+                <li>
+                    <h3>{{ listing[3] }}</h3>
+                    <p>Listing ID: {{ listing[1] }}</p>
+                    <p>{{ listing[2] }}</p>
+                    <p>Product Name: {{ listing[4] }}</p>
+                    <p>Product Description: {{ listing[5] }}</p>
+                    <p>Quantity: {{ listing[6] }}</p>
+                    <p>Reserve Price: {{ listing[7] }}</p>
+                    {% if listing[9] == 1 %}
+                        <p class="active">Status: Active</p>
+                        <form method="POST" action="/update-status-inactive">
+                            <input type="hidden" name="listing-id" value="{{ listing[1] }}">
+                            <button type="submit" class="btn btn-danger">Change Status</button>
+                        </form>
+                    {% elif listing[9] == 2 %}
+                        <p class="sold">Status: Sold</p>
+                    {% else %}
+                        <p class="inactive">Status: Inactive</p>
+                        <form method="post" action="/update-status-active">
+                            <input type="hidden" name="listing-id" value="{{ listing[1] }}">
+                            <button type="submit" class="btn btn-success">Change Status</button>
+                        </form>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h1>No Current Listings</h1>
+    {% endif %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</body>
+</html>
