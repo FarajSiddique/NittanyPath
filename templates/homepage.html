@@ -2,55 +2,61 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="{{ url_for('static',filename='homepage.css') }}">
+    <title>Welcome to LionAuction</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <title>Title</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='homepage.css') }}">
 </head>
 <body>
-<div class="navbar">
-    <nav>
-        <ul>
-            <li><a href="/categories" methods="POST">Choose an Item</a></li>
-            <li><a href="/contact">Contact HelpDeskIT</a></li>
-        </ul>
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">LionAuction</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/categories">Choose an Item</a></li>
+                <li><a href="/contact">Contact HelpDeskIT</a></li>
+            </ul>
+        </div>
     </nav>
-</div>
-<div class="container-fluid text-center center">
-    <div class="row content">
-        <div class="col-sm-2 text-left">
-            <table class="info-table table">
-            <tr>
-                <th scope="col">Email</th>
-                <th scope="col">First name</th>
-                <th scope="col">Last Name</th>
-                <th scope="col">Gender</th>
-                <th scope="col">Age</th>
-                <th scope="col">Major</th>
-                <th scope="col">Street Address</th>
-            </tr>
-            <tr>
-                <td>{{ data[0] }}</td>
-                <td>{{ data[1] }}</td>
-                <td>{{ data[2] }}</td>
-                <td>{{ data[3] }}</td>
-                <td>{{ data[4] }}</td>
-                <td>{{ data[6] }}</td>
-                <td>{{ street_address }}</td>
-            </tr>
-            </table>
 
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Gender</th>
+                            <th>Age</th>
+                            <th>Major</th>
+                            <th>Street Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ data[0] }}</td>
+                            <td>{{ data[1] }}</td>
+                            <td>{{ data[2] }}</td>
+                            <td>{{ data[3] }}</td>
+                            <td>{{ data[4] }}</td>
+                            <td>{{ data[6] }}</td>
+                            <td>{{ street_address }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-4">
+                <div class="well">
+                    <h3>Welcome to LionAuction!</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tristique erat sed dolor maximus, id aliquet neque volutpat. Nulla facilisi. Nam a diam nunc. Nam volutpat velit et ultricies elementum. Nullam euismod ante nec venenatis tincidunt.</p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="col-sm-8 text-left">
-        <h1>Welcome</h1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-        <hr>
-        <h3>Test</h3>
-        <p>Lorem ipsum...</p>
-    </div>
-</div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </body>
 </html>

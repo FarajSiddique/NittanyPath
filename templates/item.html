@@ -47,10 +47,10 @@
             {% for item in item_list %}
                 <li>
                     <h3>{{ item[2] }}</h3>
-                    <p>Category: {{ item[3] }}</p>
-                    <p>Parent Category: {{ item[4] }}</p>
-                    <p>Price: ${{ item[5] }}</p>
-                    <p>Description: {{ item[6] }}</p>
+                    <p>{{ item[3] }}</p>
+                    <p>Product Name: {{ item[4] }}</p>
+                    <p>Product Description: {{ item[5] }}</p>
+                    <p>Quantity: {{ item[6] }}</p>
                     {% if item[9] == 1 %}
                         <p class="active">Status: Active</p>
                     {% elif item[9] == 2 %}

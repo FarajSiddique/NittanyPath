@@ -6,11 +6,9 @@ app = Flask(__name__)
 
 host = 'http://127.0.0.1:5000/'
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
-
 
 @app.route('/name', methods=['POST', 'GET'])
 def name():
@@ -24,11 +22,14 @@ def name():
                 connection = sql.connect('database.db')
                 cursor = connection.execute('SELECT * from bidders WHERE email=?;', (email, ))
                 data = cursor.fetchone()
+                print(data)
                 if data is not None:
                     cursor2 = connection.execute('SELECT * from address WHERE address_id=?;', (data[5], ))
                     address_data = cursor2.fetchone()
+                    print(address_data)
                     cursor2 = connection.execute('SELECT * from zipcode_info WHERE zipcode=?;', (address_data[1], ))
                     zipcode_data = cursor2.fetchone()
+                    print(zipcode_data)
                     street_address = f'{address_data[2]} {address_data[3]} {zipcode_data[1]}, {zipcode_data[2]} {zipcode_data[0]}'
                     cursor.close()
                     cursor2.close()
@@ -63,7 +64,6 @@ def name():
         else:
             error = 'invalid input name'
     return render_template('input.html', error=error)
-
 
 def valid_name(username, password):
     ## Check validity of plain text password and stored hashed password
@@ -115,6 +115,5 @@ def item_page(item):
     return render_template("item.html", item_list=available_items_list)
 
 if __name__ == "__main__":
-    app.run()
-
+    app.run(debug=True)
 
