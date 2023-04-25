@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Item Listing</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -53,6 +54,7 @@
                     <p>Quantity: {{ item[6] }}</p>
                     {% if item[9] == 1 %}
                         <p class="active">Status: Active</p>
+                        <a href="{{ url_for('bid', item_num=item[1]) }}" class="btn btn-success">Bid Here!</a>
                     {% elif item[9] == 2 %}
                         <p class="sold">Status: Sold</p>
                     {% else %}
@@ -64,5 +66,7 @@
     {% else %}
         <h1>No Current Listings</h1>
     {% endif %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </body>
 </html>

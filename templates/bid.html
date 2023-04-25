@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bid on Item</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h3>{{ item_info[3] }}</h3>
+                <p>Product Name: {{ item_info[4] }}</p>
+                <p>Product Description: {{ item_info[5] }}</p>
+                <p>Quantity: {{ item_info[6] }}</p>
+                <p>Max Bids: {{ max_bids }}</p>
+                <p>Seller Username: {{ item_info[0] }}</p>
+
+                <h1>Enter your Bid: </h1>
+                <form action="{{ request.path }}" method="post">
+                    <div class="form-group">
+                        <label for="current_bid">Current Bid</label>
+                        <input type="number" class="form-control" id="current_bid" name="current_bid" placeholder="Enter your bid" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Bid</button>
+                </form>
+                <p>{{  message }}</p>
+
+                <div>
+                    {% if bid_list %}
+                        <h4>Bid History</h4>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Bidder</th>
+                                    <th>Bid Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for x in bid_list %}
+                                    <tr>
+                                        <td>{{ x[3] }}</td>
+                                        <td>{{ x[4] }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</body>
+</html>

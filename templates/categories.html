@@ -5,19 +5,11 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <title>Categories</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #104899;
-            color: white;
-            text-align: center;
-            padding: 1rem;
         }
 
         ul {
@@ -50,15 +42,27 @@
     </style>
 </head>
 <body>
-    <header>
-        <h1>Categories</h1>
-    </header>
-    <ul>
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">LionAuction</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/categories">Choose an Item</a></li>
+                <li><a href="/contact">Contact HelpDeskIT</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <ul>
         {% for category in categories %}
             <li>
                 <a href="{{ category[1] }}">{{ category[0] }} - {{ category[1] }}</a>
             </li>
         {% endfor %}
-    </ul>
+        </ul>
+    </div>
+
 </body>
 </html>
